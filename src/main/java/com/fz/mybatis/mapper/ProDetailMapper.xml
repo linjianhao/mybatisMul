@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fz.mybatis.mapper.ProDetailMapper">
+
+    <select id="findByIdProDet" parameterType="Integer" resultType="ProDetailDo">
+        SELECT
+          T.DET_ID id,
+          T.PROD_ID proId,
+          T.DET_LENGTH detLength,
+          T.DET_WIDTH detWidth,
+          T.DET_HEIGHT detHeight,
+          T.DET_MATE detMate,
+          T.DET_ADDR detAddr,
+          T.DET_DATE detDate,
+          T.DET_DESC detDesc,
+          T.STATE state,
+          T.CREATE_BY createBy,
+          T.CREATE_DATE createDate,
+          T.UPDATE_BY updateBy,
+          T.UPDATE_DATE updateDate
+        FROM
+          TB_PROD_DETAIL T
+        WHERE T.DET_ID = #{id}
+    </select>
+
+    <resultMap id="proDetailMap" type="ProDetailDo">
+        <id column="DET_ID" property="id"/>
+        <result column="DET_ADDR" property="detAddr"/>
+        <result column="DET_DATE" property="detDate"/>
+        <result column="DET_DESC" property="detDesc"/>
+        <result column="DET_LENGTH" property="detLength"/>
+        <result column="DET_WIDTH" property="detWidth"/>
+        <result column="DET_HEIGHT" property="detHeight"/>
+        <result column="DET_MATE" property="detMate"/>
+        <result column="PROD_ID" property="proId"/>
+        <result column="STATE" property="state"/>
+        <result column="CREATE_BY" property="createBy"/>
+        <result column="CREATE_DATE" property="createDate"/>
+        <result column="UPDATE_BY" property="updateBy"/>
+        <result column="UPDATE_DATE" property="updateDate"/>
+        <association property="prod" javaType="ProductDo" column="PROD_ID"
+                     select="com.fz.mybatis.mapper.ProductMapper.findByIdProd"/>
+    </resultMap>
+    <select id="queryProDetail" resultMap="proDetailMap">
+        SELECT
+          T.DET_ID,
+          T.DET_ADDR,
+          T.DET_DATE,
+          T.DET_DESC,
+          T.DET_LENGTH,
+          T.DET_WIDTH,
+          T.DET_HEIGHT,
+          T.DET_MATE,
+          T.PROD_ID,
+          T.STATE,
+          T.CREATE_BY,
+          T.CREATE_DATE,
+          T.UPDATE_BY,
+          T.UPDATE_DATE
+        FROM
+          TB_PROD_DETAIL T
+    </select>
+</mapper>

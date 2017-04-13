@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fz.mybatis.mapper.UserMapper">
+
+    <!--<cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>-->
+    <!--<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
+
+    <select id="findUserById" parameterType="java.lang.Integer" resultType="UserDo">
+        select user_id userId,user_name userName, pass_word password from tb_user where user_id=#{id}
+    </select>
+
+    <insert id="insert" parameterType="UserDo">
+        insert into tb_user(user_name,pass_word,real_name,email,cell_phone,address,user_type,state,create_by,create_date,update_by,update_date)
+        value(#{userName},#{password},#{realName},#{email},#{cellPhone},#{address},#{userType},#{state},#{createBy},#{createDate},#{updateBy},#{updateDate})
+    </insert>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from tb_user where user_id=#{value}
+    </delete>
+
+    <update id="updateById" parameterType="UserDo">
+        update tb_user set user_name=#{userName}, pass_word=#{password},address=#{address},update_by=#{updateBy},update_date=now()
+        where user_id=#{id}
+    </update>
+
+    <!-- 遍历的对象是Map.Entry时，index代表对应的key，item代表对应的value -->
+    <update id="updateBatchId" parameterType="java.util.List">
+        <foreach collection="list" item="item" open="" close="" separator=";">
+            update tb_user
+            <set>
+                address=#{item.address},cell_phone=#{item.cellPhone}
+            </set>
+            where user_id = #{item.id}
+        </foreach>
+    </update>
+
+    <!--<insert id="addBatchId" parameterType="java.util.List">-->
+        <!--<foreach collection="list" item="item" open="" close="" separator=";">-->
+            <!--INSERT INTO tb_prod_type (type_name, type_p_id, menu_uri, menu_style, is_menu)-->
+            <!--VALUES ('濂冲＋涓撳尯', 0, '/shop/product-list.jsp', '1', '1')       -->
+        <!--</foreach>-->
+    <!--</insert>-->
+
+    <select id="queryBatchId" parameterType="java.util.List" resultType="user">
+        SELECT user_id userId,user_name userName, pass_word password
+          FROM tb_user t WHERE t.state=1
+        <foreach collection="list" item="item" open="AND (" close=")" separator="or">
+            t.user_id=#{item.id}
+        </foreach>
+    </select>
+
+    <select id="queryBatchIds" parameterType="UserDo" resultType="UserDo">
+        SELECT user_id userId,user_name userName, pass_word password
+        FROM tb_user t WHERE t.state=1
+        <foreach collection="idds" item="id" open="AND t.user_id IN (" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

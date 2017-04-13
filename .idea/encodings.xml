@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/fz/mybatis/mapper/ProDetailMapper.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/fz/mybatis/mapper/ProDetailMapper.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/fz/mybatis/mapper/ProductMapper.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/fz/mybatis/mapper/ProductMapper.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/fz/mybatis/mapper/UserMapper.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/fz/mybatis/mapper/UserMapper.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/test/java/com/fz/mybatis/mapper/ProductMapperTest.java" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>

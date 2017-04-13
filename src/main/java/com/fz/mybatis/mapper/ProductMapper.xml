@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fz.mybatis.mapper.ProductMapper">
+
+    <!--<cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>一级缓存和二级缓存-->
+    <!--<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
+<!--call seq_no()是生成流水号-->
+    <insert id="insertProd" parameterType="ProductDo">
+        <selectKey keyColumn="order_sn" keyProperty="id" statementType="CALLABLE" resultType="java.lang.String"
+                   order="BEFORE">
+            call seq_no()
+        </selectKey>
+        INSERT INTO tb_product (pro_id,pro_name, pro_real_price, pro_now_price, is_stock, pro_desc, pro_size, pro_color,
+        pro_score, pro_type_id, pro_pic_id, pro_pic_uri, state, create_by, create_date, update_by, update_date)
+        VALUES(#{id},#{proName},#{proRealPrice},#{proNowPrice},#{isStock},#{proDesc},#{proSize},#{proColor},#{proScore},#{proTypeId},#{proPicId},#{proPicUri},'1','admin',now(),'admin',now())
+    </insert>
+
+    <select id="queryProdList" parameterType="productDo" resultType="productDo">
+        SELECT pro_id id, pro_name proName,pro_real_price proRealPrice,pro_now_price proNowPrice,is_stock isStock
+        FROM tb_product t
+        <where>
+            <include refid="queryProd"/>
+        </where>
+    </select>
+
+    <select id="queryProdCount" parameterType="productDo" resultType="int">
+        SELECT count(1)
+        FROM tb_product t
+        <where>
+            <include refid="queryProd"/>
+        </where>
+    </select>
+
+    <select id="findByIdProd" parameterType="java.lang.Integer" resultType="ProductDo">
+         select
+          P.PRO_ID id,
+          P.PRO_NAME proName,
+          P.PRO_REAL_PRICE proRealPrice,
+          P.PRO_NOW_PRICE proNowPrice,
+          P.IS_STOCK isStock,
+          P.PRO_DESC proDesc,
+          P.PRO_SIZE proSize,
+          P.PRO_COLOR proColor,
+          P.PRO_SCORE proScore,
+          P.PRO_TYPE_ID proTypeId,
+          P.PRO_PIC_ID proPicId,
+          P.PRO_PIC_URI proPicUri,
+          P.STATE state,
+          P.CREATE_BY createBy,
+          P.CREATE_DATE createDate,
+          P.UPDATE_BY updateBy,
+          P.UPDATE_DATE updateDate
+         from tb_product p WHERE p.pro_id=#{id}
+    </select>
+
+    <sql id="queryProd">
+        <if test="proName!=null and proName!=''">
+            AND t.pro_name LIKE '%${proName}%'
+        </if>
+        <if test="proNowPrice!=null and proNowPrice!=''">
+            AND t.pro_now_price &gt; #{proNowPrice}
+        </if>
+        <if test="isStock!=null and isStock!=''">
+            AND t.is_stock=#{isStock}
+        </if>
+    </sql>
+
+    <select id="queryProDetail" resultType="ProductDetailDo">
+        SELECT
+          P.PRO_ID id,
+          P.PRO_NAME proName,
+          P.PRO_REAL_PRICE proRealPrice,
+          P.PRO_NOW_PRICE proNowPrice,
+          P.IS_STOCK isStock,
+          P.PRO_DESC proDesc,
+          P.PRO_SIZE proSize,
+          P.PRO_COLOR proColor,
+          P.PRO_SCORE proScore,
+          P.PRO_TYPE_ID proTypeId,
+          P.PRO_PIC_ID proPicId,
+          P.PRO_PIC_URI proPicUri,
+          P.STATE state,
+          P.CREATE_BY createBy,
+          P.CREATE_DATE createDate,
+          P.UPDATE_BY updateBy,
+          P.UPDATE_DATE updateDate,
+          D.DET_ID detId,
+          D.DET_LENGTH detLength,
+          D.DET_WIDTH detWidth,
+          D.DET_HEIGHT detHeight,
+          D.DET_MATE detMate,
+          D.DET_ADDR detAddr,
+          D.DET_DATE detDate,
+          D.DET_DESC detDesc
+        FROM
+          TB_PRODUCT P,
+          TB_PROD_DETAIL D
+        WHERE P.PRO_ID = D.PROD_ID
+          AND P.STATE = '1'
+          AND D.STATE = '1'
+    </select>
+
+    <resultMap id="proDetailsMap" type="ProductDo">
+        <id column="PRO_ID" property="id"/>
+        <result column="PRO_NAME" property="proName"/>
+        <result column="PRO_REAL_PRICE" property="proRealPrice"/>
+        <result column="PRO_NOW_PRICE" property="proNowPrice"/>
+        <result column="IS_STOCK" property="isStock"/>
+        <result column="PRO_DESC" property="proDesc"/>
+        <result column="PRO_SIZE" property="proSize"/>
+        <result column="PRO_COLOR" property="proColor"/>
+        <result column="PRO_SCORE" property="proScore"/>
+        <result column="PRO_TYPE_ID" property="proTypeId"/>
+        <result column="PRO_PIC_ID" property="proPicId"/>
+        <result column="PRO_PIC_URI" property="proPicUri"/>
+        <result column="STATE" property="state"/>
+        <result column="CREATE_BY" property="createBy"/>
+        <result column="CREATE_DATE" property="createDate"/>
+        <result column="UPDATE_BY" property="updateBy"/>
+        <result column="UPDATE_DATE" property="updateDate"/>
+
+        <association property="proDetailDo" javaType="ProDetailDo">
+            <id column="DET_ID" property="id"/>
+            <result column="DET_LENGTH" property="detLength"/>
+            <result column="DET_WIDTH" property="detWidth"/>
+            <result column="DET_HEIGHT" property="detHeight"/>
+            <result column="DET_MATE" property="detMate"/>
+            <result column="DET_ADDR" property="detAddr"/>
+            <result column="DET_DATE" property="detDate"/>
+            <result column="DET_DESC" property="detDesc"/>
+        </association>
+    </resultMap>
+
+    <select id="queryProDetails" resultMap="proDetailsMap">
+        SELECT
+          P.*,
+          D.DET_ID ,
+          D.DET_LENGTH ,
+          D.DET_WIDTH ,
+          D.DET_HEIGHT ,
+          D.DET_MATE ,
+          D.DET_ADDR ,
+          D.DET_DATE ,
+          D.DET_DESC
+        FROM
+          TB_PRODUCT P,
+          TB_PROD_DETAIL D
+        WHERE P.PRO_ID = D.PROD_ID
+          AND P.STATE = '1'
+          AND D.STATE = '1'
+    </select>
+
+    <select id="queryProDetailsPage" resultMap="proDetailsMap">
+        SELECT
+        P.*,
+        D.DET_ID ,
+        D.DET_LENGTH ,
+        D.DET_WIDTH ,
+        D.DET_HEIGHT ,
+        D.DET_MATE ,
+        D.DET_ADDR ,
+        D.DET_DATE ,
+        D.DET_DESC
+        FROM
+        TB_PRODUCT P,
+        TB_PROD_DETAIL D
+        WHERE P.PRO_ID = D.PROD_ID
+        AND P.STATE = '1'
+        AND D.STATE = '1'
+    </select>
+
+</mapper>

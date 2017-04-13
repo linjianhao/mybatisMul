@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--resultMap映射关系（表字段——对应的实体类中的属性）-->
+<mapper namespace="com.fz.mybatis.mapper.OrderMapper">
+    <resultMap id="orderMap" type="OrderDo">
+        <id column="ORDER_ID" property="orderId"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="ORDER_PRICE" property="orderPrice"/>
+        <result column="ORDER_NAME" property="orderName"/>
+        <result column="ORDER_TEL" property="orderTel"/>
+        <result column="ORDER_ADDR" property="orderAddr"/>
+        <result column="ORDER_DESC" property="orderDesc"/>
+        <result column="STATE" property="state"/>
+        <result column="CREATE_BY" property="createBy"/>
+        <result column="CREATE_DATE" property="createDate"/>
+        <result column="UPDATE_BY" property="updateBy"/>
+        <result column="UPDATE_DATE" property="updateDate"/>
+        <collection property="detLs" ofType="OrderDetDo">
+            <id column="DETAIL_ID" property="id"/>
+            <result column="PRO_NAME" property="proName"/>
+
+            <association property="productDo" javaType="ProductDo">
+                <id column="PRO_ID" property="id"/>
+                <result column="PRO_NOW_PRICE" property="proNowPrice"/>
+                <result column="PRO_NAME" property="proName"/>
+                <result column="PRO_SIZE" property="proSize"/>
+                <result column="PRO_COLOR" property="proColor"/>
+                <result column="PRO_DESC" property="proDesc"/>
+            </association>
+        </collection>
+    </resultMap>
+    <select id="queryOrder" resultMap="orderMap">
+        SELECT
+        O.ORDER_ID,
+        O.USER_ID,
+        O.ORDER_PRICE,
+        O.ORDER_NAME,
+        O.ORDER_PHONE,
+        O.ORDER_TEL,
+        O.ORDER_ADDR,
+        O.ORDER_DESC,
+        O.STATE,
+        O.CREATE_BY,
+        O.CREATE_DATE,
+        O.UPDATE_BY,
+        O.UPDATE_DATE,
+        D.DETAIL_ID,
+        D.PRO_NAME,
+        P.PRO_ID,
+        P.PRO_NOW_PRICE,
+        P.PRO_NAME,
+        P.PRO_SIZE,
+        P.PRO_COLOR,
+        P.PRO_DESC
+        FROM
+        TB_ORDER O,
+        TB_ORDER_DETAIL D,
+        TB_PRODUCT P
+        WHERE O.ORDER_ID = D.ORDER_ID
+        AND D.PRO_ID = P.PRO_ID
+        AND O.STATE = '1'
+        AND D.STATE = '1'
+        AND P.STATE = '1'
+    </select>
+</mapper>
