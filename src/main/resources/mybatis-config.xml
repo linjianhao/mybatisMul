@@ -4,12 +4,12 @@
 
 <configuration>
     <properties resource="jdbc.properties"/>
-<!--快速生成文件（相应的实体类）
+<!--快速生成文件（相应的实体类）-->
     <settings>
         <setting name="cacheEnabled" value="true"/>
-        <setting name="lazyLoadingEnabled" value="true"/>&lt;!&ndash;默认false&ndash;&gt;
-        <setting name="aggressiveLazyLoading" value="false"/>&lt;!&ndash;默认true&ndash;&gt;
-    </settings>-->
+        <setting name="lazyLoadingEnabled" value="true"/><!--默认false-->
+        <setting name="aggressiveLazyLoading" value="false"/><!--默认true-->
+    </settings>
 <!--扫描包-->
     <typeAliases>
         <package name="com.fz.mybatis.domain"/>
